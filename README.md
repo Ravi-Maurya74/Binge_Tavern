@@ -29,9 +29,9 @@ This an flutter app that displays shows annd there related info by using __TV Sh
   
 
 ## ScreenShots ##
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(1).gif)
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(2).gif)
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(3).gif)
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(4).gif)
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(5).gif)
-![](https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(6).gif)
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(1).gif" width="200" height="400"/>
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(2).gif" width="200" height="400"/>
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(3).gif" width="200" height="400"/>
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(4).gif" width="200" height="400"/>
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(5).gif" width="200" height="400"/>
+<img src="https://github.com/Ravi-Maurya74/Binge_Tavern/blob/main/gifs/gif%20(6).gif" width="200" height="400"/>

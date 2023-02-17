@@ -27,7 +27,7 @@ class Loader {
     List<dynamic> data2 = [];
     var futures = <Future>[];
     for (var element in ids) {
-      futures.add(NetworkHelper().getData(url: 'shows/$element?embed[]=crew&embed[]=cast'));
+      futures.add(NetworkHelper().getData(url: 'shows/$element?embed[]=crew&embed[]=cast&embed[]=episodes'));
     }
     DateTime now = DateTime.now();
     DateTime date = DateTime(now.year, now.month, now.day)

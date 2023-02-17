@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:tv_app/pages/show_page.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -114,7 +115,9 @@ class CustomTextField extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      itemData['show']['rating']['average'].toString(),
+                      itemData['show']['rating']['average'] == null
+                          ? "-"
+                          : itemData['show']['rating']['average'].toString(),
                       style: const TextStyle(fontSize: 10),
                     ),
                   ],
@@ -122,6 +125,27 @@ class CustomTextField extends StatelessWidget {
               );
             },
             onSuggestionSelected: (suggestion) async {
+              var futures = <Future>[];
+              List<dynamic> response;
+              try {
+                futures.add(NetworkHelper().getData1(
+                    url: suggestion["show"]["_links"]["previousepisode"]
+                        ["href"]));
+                futures.add(NetworkHelper().getData1(
+                    url: "${suggestion["show"]["_links"]["self"]["href"]}?embed[]=crew&embed[]=cast&embed[]=episodes"));
+                response = await Future.wait(futures);
+              } on Exception catch (e) {
+                return;
+              }
+              List<dynamic> result = [];
+              result.add(jsonDecode(response[0].body));
+              result.add(jsonDecode(response[1].body));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowPage(data: result),
+                  ));
+
               // Response movieData = await NetworkHelper()
               //     .postData(url: 'movieDetails/', jsonMap: {
               //   "movie_id": suggestion['id'],
@@ -148,5 +172,3 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
-
-

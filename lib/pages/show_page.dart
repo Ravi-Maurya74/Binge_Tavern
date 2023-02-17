@@ -1,14 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:tv_app/widgets/expand_widget.dart';
 import 'package:tv_app/widgets/faded_image.dart';
 import 'package:tv_app/widgets/fade_on_scroll.dart';
 import 'package:html/parser.dart';
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 
 class ShowPage extends StatelessWidget {
   ShowPage({required this.data, super.key});
   final ScrollController scrollController = ScrollController();
   final List<dynamic> data;
+  void scrollToBottom() {}
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +102,7 @@ class ShowPage extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              "${data[1]['averageRuntime']} minutes | ${formatGenres((data[1]['genres']) as List<dynamic>)} | ${(data[1]['premiered'] as String).substring(0, 4)}",
+                              "${data[1]['averageRuntime']} minutes | ${formatGenres((data[1]['genres']) as List<dynamic>)} | ${(data[1]['premiered'] as String).substring(0, 4)} | ${(data[1]['status'] as String)}",
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
@@ -196,6 +199,55 @@ class ShowPage extends StatelessWidget {
                       //     )),
                       //   ],
                       // ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ExpandWidget(
+                        first: Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromRGBO(147, 58, 241, 1),
+                                  Color.fromRGBO(193, 81, 166, 1),
+                                  Color.fromRGBO(247, 109, 78, 1),
+                                  // Theme.of(context).colorScheme.primary
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              "Show Episodes",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ),
+                        second: SizedBox(
+                          height: 300,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              dynamic currentEp =
+                                  data[1]['_embedded']['episodes'][index];
+                              return ListTile(
+                                title: Text(
+                                  "${currentEp['name']}",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                subtitle: Text(
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  "Season: ${currentEp['season']} | Aired: ${currentEp['airdate']}",
+                                ),
+                              );
+                            },
+                            itemCount: (data[1]['_embedded']['episodes']
+                                    as List<dynamic>)
+                                .length,
+                          ),
+                        ),
+                        scrollController: scrollController,
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

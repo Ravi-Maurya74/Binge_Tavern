@@ -126,7 +126,31 @@ class SingleRowMovie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Bounceable(
-      onTap: null,
+      onTap: () async {
+        var futures = <Future>[];
+        List<dynamic> response;
+        try {
+          futures.add(NetworkHelper().getData1(
+              url: e["_embedded"]['show']['_links']['previousepisode']
+                  ['href']));
+          futures.add(NetworkHelper()
+              .getData1(url: "${e["_embedded"]['show']['_links']['self']['href']}?embed[]=crew&embed[]=cast&embed[]=episodes"));
+          response = await Future.wait(futures);
+        } on Exception catch (e) {
+          return;
+        }
+        List<dynamic> result = [];
+        result.add(jsonDecode(response[0].body));
+        result.add(jsonDecode(response[1].body));
+        // List<dynamic> result = [];
+        // result.add(jsonDecode(prevEpisode.body));
+        // result.add(widget.data[index]);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShowPage(data: result),
+            ));
+      },
       // onTap: () async {
       //   Response movieData = await NetworkHelper().postData(
       //       url: 'movieDetails/',

@@ -239,9 +239,15 @@ class _CenterImageState extends State<CenterImage> {
         //   "movie_id": widget.data[index]['id'],
         //   "user_id": Provider.of<User>(context, listen: false).id
         // });
-        Response prevEpisode = await NetworkHelper().getData1(
-            url: (widget.data[index]['_links']["previousepisode"]['href'])
-                .toString());
+        Response prevEpisode;
+        try {
+          prevEpisode = await NetworkHelper().getData1(
+              url: (widget.data[index]['_links']["previousepisode"]['href'])
+                  .toString());
+        } on Exception catch (e) {
+          debugPrint(e.toString());
+          return;
+        }
         List<dynamic> result = [];
         result.add(jsonDecode(prevEpisode.body));
         result.add(widget.data[index]);

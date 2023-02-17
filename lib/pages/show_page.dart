@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:tv_app/widgets/faded_image.dart';
 import 'package:tv_app/widgets/fade_on_scroll.dart';
 import 'package:html/parser.dart';
@@ -41,7 +43,7 @@ class ShowPage extends StatelessWidget {
                         //     offset: Offset(5, -5)),
                       ]),
                       child: Text(
-                        data[0]['name'] as String,
+                        data[1]['name'] as String,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
@@ -97,7 +99,7 @@ class ShowPage extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              "${data[1]['averageRuntime']} | ${formatGenres((data[1]['genres']) as List<dynamic>)} | ${(data[1]['premiered'] as String).substring(0, 4)}",
+                              "${data[1]['averageRuntime']} minutes | ${formatGenres((data[1]['genres']) as List<dynamic>)} | ${(data[1]['premiered'] as String).substring(0, 4)}",
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
@@ -115,17 +117,22 @@ class ShowPage extends StatelessWidget {
                       const SizedBox(
                         height: 12,
                       ),
-                      Text(
-                        'Top Cast',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      // ActorsListRow(
-                      //   isDirector: false,
-                      //   movieId: data['id'],
+                      // Text(
+                      //   'Top Cast',
+                      //   style: Theme.of(context).textTheme.titleMedium,
                       // ),
+                      // const SizedBox(
+                      //   height: 12,
+                      // ),
+                      ActorsListRow(
+                        cast: data[1]['_embedded']['cast'],
+                        label: "Top Cast",
+                        isCast: true,
+                      ),
+                      ActorsListRow(
+                          cast: data[1]['_embedded']['crew'],
+                          label: "Crew",
+                          isCast: false),
                       // const SizedBox(
                       //   height: 12,
                       // ),
@@ -207,6 +214,179 @@ class ShowPage extends StatelessWidget {
       //   changeOffset: 50,
       //   onTap: () {},
       // ),
+    );
+  }
+}
+
+class ActorsListRow extends StatelessWidget {
+  const ActorsListRow(
+      {Key? key, required this.cast, required this.label, required this.isCast})
+      : super(key: key);
+
+  final List<dynamic> cast;
+  final String label;
+  final bool isCast;
+
+  @override
+  Widget build(BuildContext context) {
+    return cast.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...(cast)
+                        .map(
+                          (e) => isCast
+                              ? SingleCast(
+                                  e: e,
+                                )
+                              : SingleCrew(e: e),
+                        )
+                        .toList(),
+                    // CircleAvatar(
+                    //   radius: 50,
+                    //   backgroundColor: Colors.black12,
+                    //   child: IconButton(
+                    //     onPressed: () async {
+                    //       var data =
+                    //           await Navigator.pushNamed(context, AddCast.routeName);
+                    //       if (data == null) return;
+                    //       if (isDirector) {
+                    //         movie.addDirector(data);
+                    //       } else {
+                    //         movie.addActor(data);
+                    //       }
+                    //     },
+                    //     icon: const Icon(Icons.add),
+                    //     splashRadius: 50,
+                    //   ),
+                    // )
+                  ],
+                ),
+              ),
+            ],
+          );
+  }
+}
+
+class SingleCast extends StatelessWidget {
+  const SingleCast({
+    required this.e,
+    Key? key,
+  }) : super(key: key);
+  final dynamic e;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6, top: 8),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: CachedNetworkImage(
+                imageUrl: e['person']['image'] == null
+                    ? 'https://www.shutterstock.com/image-illustration/leather-background-jpeg-version-260nw-101031550.jpg'
+                    : e['person']['image']['medium'],
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    LoadingAnimationWidget.beat(color: Colors.amber, size: 20),
+                errorWidget: (context, url, error) {
+                  return Image.asset('default.jpg');
+                },
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: 105,
+            child: Text(
+              e['person']['name'],
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SingleCrew extends StatelessWidget {
+  const SingleCrew({
+    required this.e,
+    Key? key,
+  }) : super(key: key);
+  final dynamic e;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6, top: 8),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: CachedNetworkImage(
+                imageUrl: e['person']['image'] == null
+                    ? 'https://www.shutterstock.com/image-illustration/leather-background-jpeg-version-260nw-101031550.jpg'
+                    : e['person']['image']['medium'],
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    LoadingAnimationWidget.beat(color: Colors.amber, size: 20),
+                errorWidget: (context, url, error) {
+                  return Image.asset('default.jpg');
+                },
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: 105,
+            child: Text(
+              e['person']['name'],
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(
+            width: 105,
+            child: Text(
+              e['type'],
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(color: const Color.fromRGBO(144, 238, 144, 1)),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

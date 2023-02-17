@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             drawerTheme: const DrawerThemeData(
               backgroundColor: Color.fromRGBO(24, 25, 32, 1),
             )),
-        home: OpeningAnimationsPage(),
+        home: const OpeningAnimationsPage(),
       ),
     );
   }

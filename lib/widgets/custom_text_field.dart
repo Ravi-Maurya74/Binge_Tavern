@@ -102,20 +102,20 @@ class CustomTextField extends StatelessWidget {
                           .substring(0, 4),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.star,
                       color: Colors.amber,
                       size: 10,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
                     Text(
                       itemData['show']['rating']['average'].toString(),
-                      style: TextStyle(fontSize: 10),
+                      style: const TextStyle(fontSize: 10),
                     ),
                   ],
                 ),

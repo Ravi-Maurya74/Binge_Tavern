@@ -4,11 +4,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart';
 import 'package:tv_app/helpers/networking.dart';
 
 class Loader {
@@ -29,9 +27,9 @@ class Loader {
     List<dynamic> data2 = [];
     var futures = <Future>[];
     for (var element in ids) {
-      futures.add(NetworkHelper().getData(url: 'shows/$element'));
+      futures.add(NetworkHelper().getData(url: 'shows/$element?embed[]=crew&embed[]=cast'));
     }
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     DateTime date = DateTime(now.year, now.month, now.day)
         .subtract(const Duration(days: 2));
     futures.add(NetworkHelper().getData(
@@ -43,15 +41,15 @@ class Loader {
         data1.add(jsonDecode(mid[i].body));
       }
     }
-    Map<int, int> check = Map();
+    Map<int, int> check = {};
     List<dynamic> temp = jsonDecode(mid[mid.length - 1].body);
-    temp.forEach((element) {
+    for (var element in temp) {
       if (element['_embedded']['show']["image"] != null &&
           !check.containsKey(element['_embedded']['show']['id'])) {
         data2.add(element);
         check.putIfAbsent(element['_embedded']['show']['id'], () => 1);
       }
-    });
+    }
 
     data.add(data1);
     data.add(data2.sublist(0, min(data2.length, 50)));
@@ -92,6 +90,6 @@ Future<void> loadImage(ImageProvider provider) {
 
 List<int> randomNumber() {
   var rng = Random();
-  var l = new List.generate(20, (_) => rng.nextInt(67000));
+  var l = List.generate(20, (_) => rng.nextInt(67000));
   return l;
 }

@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:tv_app/pages/search_result.dart';
 import 'package:tv_app/pages/show_page.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -41,17 +42,19 @@ class CustomTextField extends StatelessWidget {
                   Icons.search,
                   color: Colors.white.withOpacity(0.7),
                 ),
-                onPressed: null,
-                // onPressed: () async {
-                //   if (textEditingController.text.length > 2) {
-                //     var results = await NetworkHelper().postData(
-                //         url: 'searchMovies/',
-                //         jsonMap: {"title": textEditingController.text});
-                //     // print(textEditingController.value);
-                //     Navigator.pushNamed(context, FilteredMovies.routeName,
-                //         arguments: jsonDecode(results.body));
-                //   }
-                // },
+                onPressed: () async {
+                  if (textEditingController.text.length > 2) {
+                    var results = await NetworkHelper().getData(
+                        url: 'search/shows?q=${textEditingController.text}');
+                    // print(textEditingController.value);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FilteredMovies(results: jsonDecode(results.body)),
+                        ));
+                  }
+                },
               )),
           Expanded(
               child: TypeAheadField(
@@ -59,7 +62,7 @@ class CustomTextField extends StatelessWidget {
             minCharsForSuggestions: 2,
             getImmediateSuggestions: false,
             noItemsFoundBuilder: (context) => const ListTile(
-              title: Text('No Movie found'),
+              title: Text('No Shows found'),
             ),
             textFieldConfiguration: TextFieldConfiguration(
                 controller: textEditingController,
@@ -132,7 +135,8 @@ class CustomTextField extends StatelessWidget {
                     url: suggestion["show"]["_links"]["previousepisode"]
                         ["href"]));
                 futures.add(NetworkHelper().getData1(
-                    url: "${suggestion["show"]["_links"]["self"]["href"]}?embed[]=crew&embed[]=cast&embed[]=episodes"));
+                    url:
+                        "${suggestion["show"]["_links"]["self"]["href"]}?embed[]=crew&embed[]=cast&embed[]=episodes"));
                 response = await Future.wait(futures);
               } on Exception catch (e) {
                 return;

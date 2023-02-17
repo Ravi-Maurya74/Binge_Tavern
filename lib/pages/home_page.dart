@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
               child: Row(
                 children: [
                   // IconButton(
@@ -133,8 +133,9 @@ class SingleRowMovie extends StatelessWidget {
           futures.add(NetworkHelper().getData1(
               url: e["_embedded"]['show']['_links']['previousepisode']
                   ['href']));
-          futures.add(NetworkHelper()
-              .getData1(url: "${e["_embedded"]['show']['_links']['self']['href']}?embed[]=crew&embed[]=cast&embed[]=episodes"));
+          futures.add(NetworkHelper().getData1(
+              url:
+                  "${e["_embedded"]['show']['_links']['self']['href']}?embed[]=crew&embed[]=cast&embed[]=episodes"));
           response = await Future.wait(futures);
         } on Exception catch (e) {
           return;
